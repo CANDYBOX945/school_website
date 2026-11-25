@@ -56,6 +56,11 @@
         <span class="pin">宿</span>
         <span class="tooltip">學生宿舍區</span>
       </button>
+
+      <button class="hotspot" style="top: 55%; left: 90%;" data-id="b8">
+        <span class="pin">體</span>
+        <span class="tooltip">體育館</span>
+      </button>
     </div>
   </main>
 
@@ -68,7 +73,12 @@
       </div>
       <div class="modal-body">
         <img id="modal-img" src="" alt="建築照片">
-        <p id="modal-desc">這裡會顯示建築物的詳細介紹...</p>
+        <p id="modal-desc">這裡會顯示建築物的詳細介紹...</p>   
+      </div>
+      <div class="modal-footer">
+          <a id="modal-link" href="https://www.yzu.edu.tw/index.php/tw/" target="_blank" rel="noopener noreferrer" class="pixel-link-btn">
+            ▶ 前往詳細頁面
+          </a>
       </div>
     </div>
   </div>
@@ -397,6 +407,63 @@
     if (items[0]) {
       setTimeout(() => shootDanmaku(items[0].text), 600);
     }
+  })();
+</script>
+
+
+
+
+
+
+
+
+<script id="yzu-modal-link-addon">
+  (() => {
+    const links = {
+      "元智一館": "people1.html",
+      "元智二館": "people1.html",
+      "元智三館": "people1.html",
+      "元智五館": "people1.html",
+      "元智七館": "people1.html",
+      "學生宿舍區": "dorm.html",
+      "體育館": "people1.html",
+    };
+
+    const modalBody = document.querySelector("#info-modal .modal-body");
+    const modalTitle = document.getElementById("modal-title");
+    if (!modalBody || !modalTitle) return;
+
+    const btn = document.createElement("a");
+    btn.id = "yzu-auto-page-btn";
+    btn.textContent = "▶ 進入專屬頁面";
+    btn.target = "_blank";
+    btn.rel = "noopener noreferrer";
+    btn.style.cssText = [
+      "display:inline-block",
+      "margin-top:14px",
+      "padding:8px 14px",
+      "background:#f1c40f",
+      "color:#000",
+      "font-weight:bold",
+      "font-size:0.85rem",
+      "text-decoration:none",
+      "border:3px solid #fff",
+      "box-shadow:3px 3px 0 #000"
+    ].join(";");
+
+    const wrap = document.createElement("div");
+    wrap.style.cssText = "display:flex;justify-content:flex-end;";
+    wrap.appendChild(btn);
+    modalBody.appendChild(wrap);
+
+    const syncLink = () => {
+      const titleText = modalTitle.textContent || "";
+      const matchedKey = Object.keys(links).find((k) => titleText.includes(k));
+      btn.href = matchedKey ? links[matchedKey] : "#";
+    };
+
+    new MutationObserver(syncLink).observe(modalTitle, { childList: true, characterData: true, subtree: true });
+    syncLink();
   })();
 </script>
 </body>

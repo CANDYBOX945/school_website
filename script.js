@@ -34,6 +34,11 @@ const campusData = {
     title: "學生宿舍區 (Dormitory)",
     image: "images/building/dorm 1.jpg",
     desc: "位於校園東北側（男一宿、女一宿、男女二宿），鄰近操場、網球場與學生餐廳，生活機能便利。"
+  },
+  b8: {
+    title: "體育館",
+    image: "images/building/building8.jpg", // 請替換為你的實際圖片路徑
+    desc: "充滿熱血激情的地方"
   }
 };
 
@@ -73,10 +78,6 @@ modal.addEventListener("click", (e) => {
 
 
 
-
-
-
-
 function formatRelativeTime(createdAt) {
   if (!createdAt) return "剛剛";
   const diffSec = Math.floor((Date.now() - createdAt) / 1000);
@@ -88,3 +89,5 @@ function formatRelativeTime(createdAt) {
   const diffDay = Math.floor(diffHr / 24);
   return `${diffDay} 天前`;
 }
+
+
