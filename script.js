@@ -91,3 +91,19 @@ function formatRelativeTime(createdAt) {
 }
 
 
+
+
+//驚嘆號按鈕
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".exclamation-only-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetUrl = btn.dataset.target;
+      if (targetUrl) {
+        window.location.href = targetUrl;
+      }
+    });
+  });
+});
+
+

@@ -51,7 +51,7 @@ body {
   display: block;
   width: 100%;
   height: auto;
-  image-rendering: pixelated; 
+  image-rendering: pixelated;
 }
 
 /* 互動熱區按鈕 */
@@ -179,3 +179,75 @@ body {
   color: #d2dae2;
 }
 
+/* 驚嘆號按鈕（穩定位 + 上下跳動） */
+.exclamation-only-btn,
+.exclamation-only-btn.map-exclamation {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #e2900b;
+  font-family: "Press Start 2P", "Courier New", monospace, sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  text-shadow:
+    -2px 0 #000000,
+     2px 0 #000000,
+     0 -2px #000000,
+     0  2px #000000,
+     0  3px 0 #000000;
+  animation: map-exclamation-bounce 1.1s steps(2) infinite;
+}
+
+.exclamation-only-btn:hover,
+.exclamation-only-btn.map-exclamation:hover {
+  color: #f1c40f;
+  animation: none;
+  transform: translate(-50%, calc(-50% - 4px)) scale(1.12);
+  z-index: 20;
+}
+
+.exclamation-only-btn:active,
+.exclamation-only-btn.map-exclamation:active {
+  animation: none;
+  transform: translate(-50%, calc(-50% + 2px)) scale(0.96);
+}
+
+/* 上方黑色提示標籤 */
+.exclamation-only-btn::after {
+  content: attr(data-title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #000000;
+  color: #ffffff;
+  font-family: sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border: 2px solid #ffffff;
+  box-shadow: 2px 2px 0 #000000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.exclamation-only-btn:hover::after {
+  opacity: 1;
+}
+
+@keyframes map-exclamation-bounce {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, calc(-50% - 5px));
+  }
+}

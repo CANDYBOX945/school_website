@@ -61,6 +61,26 @@
         <span class="pin">體</span>
         <span class="tooltip">體育館</span>
       </button>
+
+      <button
+    type="button"
+    class="exclamation-only-btn map-exclamation"
+    data-title="特別事件"
+    data-target="event/people1.html"
+    style="top: 50%; left: 25%;"
+    aria-label="特別事件">
+    !
+  </button>
+
+  <button
+    type="button"
+    class="exclamation-only-btn map-exclamation"
+    data-title="特別事件"
+    data-target="event/people2.html"
+    style="top: 75%; left: 52%;"
+    aria-label="特別事件">
+    !
+  </button>
     </div>
   </main>
 
@@ -424,9 +444,10 @@
       "元智二館": "people1.html",
       "元智三館": "people1.html",
       "元智五館": "people1.html",
-      "元智七館": "people1.html",
+      "元智七館": "/event/people1.html",
       "學生宿舍區": "dorm.html",
       "體育館": "people1.html",
+
     };
 
     const modalBody = document.querySelector("#info-modal .modal-body");
@@ -436,8 +457,8 @@
     const btn = document.createElement("a");
     btn.id = "yzu-auto-page-btn";
     btn.textContent = "▶ 進入專屬頁面";
-    btn.target = "_blank";
-    btn.rel = "noopener noreferrer";
+    //btn.target = "_blank";
+    //btn.rel = "noopener noreferrer";
     btn.style.cssText = [
       "display:inline-block",
       "margin-top:14px",
@@ -466,4 +487,5 @@
     syncLink();
   })();
 </script>
+  
 </body>

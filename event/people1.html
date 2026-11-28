@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>元智一館 - 像素戀愛養成模式</title>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #111827;
+      font-family: 'DotGothic16', 'Microsoft JhengHei', sans-serif;
+      padding: 16px;
+    }
+
+    /* 外層遊戲機螢幕框 (4:3 經典比例) */
+    .game-screen {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 4 / 3;
+      /* 經典藍白雙色像素格紋外框 */
+      background-color: #2b6cb0;
+      background-image:
+        linear-gradient(45deg, #3182ce 25%, transparent 25%),
+        linear-gradient(-45deg, #3182ce 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #3182ce 75%),
+        linear-gradient(-45deg, transparent 75%, #3182ce 75%);
+      background-size: 32px 32px;
+      background-position: 0 0, 0 16px, 16px -16px, -16px 0;
+      border: 6px solid #1a202c;
+      box-shadow: 0 0 0 4px #cbd5e0, 0 16px 40px rgba(0, 0, 0, 0.8);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+/* 內部教室場景視窗 */
+.scene-viewport {
+  position: relative;
+  flex: 1;
+  border: 6px solid #5c3a21;
+  box-shadow: inset 0 0 0 3px #2d1b0e, 0 0 0 3px #1a202c;
+  overflow: hidden;
+
+  /* 替換為教室背景圖片 */
+  background-color: #d6cbb5; /* 圖片載入前或無法顯示時的備用底色 */
+  background-image: url('../images/people/people1.jpg'); /* 換成你的圖片路徑或 URL */
+  background-size: cover; /* 鋪滿視窗並維持比例（若想完整顯示不裁切可改為 contain） */
+  background-position: center center; /* 圖片置中對齊 */
+  background-repeat: no-repeat; /* 不重複平鋪 */
+}
+
+    
+
+    /* 復古木框UI共通樣式 (還原純愛手札紅棕木框 + 綠底) */
+    .wood-panel {
+      background-color: #274e37;
+      border: 5px solid #8b4513;
+      box-shadow:
+        inset 0 0 0 3px #3e1f08,
+        0 0 0 3px #1a1a1a,
+        4px 4px 0 rgba(0, 0, 0, 0.5);
+      color: #a7f3d0;
+      text-shadow: 2px 2px 0 #0f291e;
+    }
+
+    /* 左上角地點牌 */
+    .location-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 6px 18px;
+      font-size: clamp(16px, 2.2vw, 26px);
+      font-weight: bold;
+      letter-spacing: 4px;
+      z-index: 20;
+    }
+
+    /* 左上角返回地圖按鈕 */
+    .back-btn {
+      position: absolute;
+      top: 14px;
+      left: 175px;
+      background-color: #c53030;
+      color: #fff;
+      border: 3px solid #fff;
+      box-shadow: 3px 3px 0 #000;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: clamp(12px, 1.4vw, 16px);
+      cursor: pointer;
+      text-decoration: none;
+      z-index: 25;
+    }
+
+    .back-btn:hover {
+      background-color: #e53e3e;
+    }
+
+    /* 右側直式日期牌 (還原原圖右側直條框) */
+    .date-badge {
+      position: absolute;
+      top: 18%;
+      right: 14px;
+      width: clamp(42px, 5vw, 56px);
+      padding: 12px 4px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(15px, 1.9vw, 22px);
+      letter-spacing: 4px;
+      z-index: 20;
+    }
+
+    
+
+    /* 互動選項視窗 (對話到特定段落時彈出) */
+    .choice-box {
+      position: absolute;
+      top: 24%;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 30;
+    }
+
+    .choice-box.hidden {
+      display: none;
+    }
+
+    .choice-btn {
+      background-color: #1e3a2f;
+      color: #fef08a;
+      border: 4px solid #8b4513;
+      box-shadow: 0 0 0 2px #000, 4px 4px 0 rgba(0, 0, 0, 0.6);
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: clamp(14px, 1.7vw, 20px);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .choice-btn:hover {
+      background-color: #2f6f4e;
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    /* 下方綠底木框對話視窗 (還原純愛手札經典字幕區) */
+    .dialogue-box {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 82%;
+      height: 24%;
+      padding: 14px 22px;
+      cursor: pointer;
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .speaker-name {
+      font-size: clamp(14px, 1.6vw, 19px);
+      color: #fde047;
+      margin-bottom: 4px;
+    }
+
+    .dialogue-text {
+      font-size: clamp(16px, 2.1vw, 25px);
+      line-height: 1.45;
+      color: #ecfdf5;
+      letter-spacing: 2px;
+    }
+
+    .next-indicator {
+      align-self: flex-end;
+      font-size: 16px;
+      color: #fde047;
+      animation: blink 0.8s steps(2) infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="game-screen">
+    <div class="scene-viewport">
+      <!-- 左上地點框 -->
+      <div class="wood-panel location-badge">元智幼稚園</div>
+      <a href="../index.html" class="back-btn">◀ 逃走🏃‍♀️</a>
+
+      <!-- 右側直式日期框 -->
+      <div id="date-badge" class="wood-panel date-badge">114年5月14日</div>
+
+      <!-- 互動選項框 -->
+      <div id="choice-box" class="choice-box hidden">
+        <button class="choice-btn" data-choice="class">▶ 詢問一館有什麼課？</button>
+        <button class="choice-btn" data-choice="chat">▶ 稱讚今天的格子襯衫！</button>
+        <button class="choice-btn" data-choice="leave">▶ 離開一館回校園地圖</button>
+      </div>
+
+      <!-- 中間像素人物立繪 -->
+      <div class="character-stage">
+        <canvas id="pixel-avatar-canvas" width="96" height="96"></canvas>
+      </div>
+
+      <!-- 下方經典黑板綠對話框 -->
+      <div id="dialogue-box" class="wood-panel dialogue-box" title="點擊繼續對話">
+        <div>
+          <div id="speaker-name" class="speaker-name">【油膩學長】</div>
+          <div id="dialogue-text" class="dialogue-text"></div>
+        </div>
+        <div id="next-indicator" class="next-indicator">▼</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+
+    // ==========================================
+    // 2. 純愛手札風打字機對話劇本系統
+    // ==========================================
+    const scripts = {
+      intro: [
+        "嗨！歡迎來到元智，我阿罵都說我很溫柔體貼喔。",
+        "剛從圓環走過來嗎？小心掉進我的戀愛循環喔！",
+        "接下來你想跟學長做...什麼呢(挑眉？"
+      ],
+      class: [
+        "有和我的戀愛修羅課，是必修課喲~",
+        "從宿舍走過來可是要抓好時間的，不然會被我抓到喔(歪頭燦笑",
+        "還想聊聊其他的嗎(摸頭？"
+      ],
+      chat: [
+        "哈哈，謝謝！這件紅藍白格子襯衫裡可是包著兇猛巨獸呢！",
+        "背後的櫻花背景很棒吧？元智春天特別適合戀愛呢。",
+        "還有什麼想問的嗎？"
+      ]
+    };
+
+    let currentScene = "intro";
+    let lineIndex = 0;
+    let isTyping = false;
+    let typingTimer = null;
+
+    const textEl = document.getElementById("dialogue-text");
+    const dialogueBox = document.getElementById("dialogue-box");
+    const choiceBox = document.getElementById("choice-box");
+    const nextIndicator = document.getElementById("next-indicator");
+
+    function typeLine(sentence) {
+      clearInterval(typingTimer);
+      textEl.textContent = "";
+      isTyping = true;
+      nextIndicator.style.visibility = "hidden";
+      let charIdx = 0;
+
+      typingTimer = setInterval(() => {
+        textEl.textContent += sentence.charAt(charIdx);
+        charIdx++;
+        if (charIdx >= sentence.length) {
+          clearInterval(typingTimer);
+          isTyping = false;
+          nextIndicator.style.visibility = "visible";
+
+          // 如果是該段對話的最後一句，顯示互動選項
+          if (lineIndex === scripts[currentScene].length - 1) {
+            choiceBox.classList.remove("hidden");
+          }
+        }
+      }, 45);
+    }
+
+    function advanceDialogue() {
+      const lines = scripts[currentScene];
+      // 若還在打字中，點擊直接顯示完整句子
+      if (isTyping) {
+        clearInterval(typingTimer);
+        textEl.textContent = lines[lineIndex];
+        isTyping = false;
+        nextIndicator.style.visibility = "visible";
+        if (lineIndex === lines.length - 1) {
+          choiceBox.classList.remove("hidden");
+        }
+        return;
+      }
+
+      if (lineIndex < lines.length - 1) {
+        lineIndex++;
+        typeLine(lines[lineIndex]);
+      }
+    }
+
+    dialogueBox.addEventListener("click", advanceDialogue);
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" || e.code === "Enter") {
+        advanceDialogue();
+      }
+    });
+
+    // 綁定選項按鈕
+    document.querySelectorAll(".choice-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const action = btn.getAttribute("data-choice");
+        if (action === "leave") {
+          window.location.href = "../index.html";
+          return;
+        }
+        choiceBox.classList.add("hidden");
+        currentScene = action;
+        lineIndex = 0;
+        typeLine(scripts[currentScene][0]);
+      });
+    });
+
+    // 開場啟動第一句對話
+    typeLine(scripts.intro[0]);
+  </script>
+</body>
+</html>
